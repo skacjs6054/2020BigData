@@ -1,0 +1,393 @@
+{
+  "intents": [
+    {
+      "intent": "purchase",
+      "examples": [
+        {
+          "text": "이용권 어떻게 사"
+        },
+        {
+          "text": "이용권 구매 방법 알려줘"
+        },
+        {
+          "text": "이용권 구매 방법"
+        },
+        {
+          "text": "이용권 구매하고 싶어"
+        },
+        {
+          "text": "이용권 사고 싶어"
+        }
+      ],
+      "description": "이용권 구매 방법"
+    },
+    {
+      "intent": "use",
+      "examples": [
+        {
+          "text": "이용방법"
+        },
+        {
+          "text": "따릉이 쓰는 법"
+        },
+        {
+          "text": "따릉이예제"
+        },
+        {
+          "text": "따릉이 어디서 타"
+        },
+        {
+          "text": "따릉이 타는 방법"
+        },
+        {
+          "text": "따릉이 방법"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "return",
+      "examples": [
+        {
+          "text": "따릉이반납"
+        },
+        {
+          "text": "따릉이 반납 장소"
+        },
+        {
+          "text": "따릉이 반납하는 장소"
+        },
+        {
+          "text": "따릉이 반납 방법"
+        },
+        {
+          "text": "따릉이 어디서 반납해"
+        }
+      ],
+      "description": ""
+    }
+  ],
+  "entities": [
+    {
+      "entity": "member",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "비회원",
+          "synonyms": [
+            "비회원"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "회원",
+          "synonyms": [
+            "회원가입, 회원"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "yes_or_no",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "yes",
+          "synonyms": [
+            "네",
+            "좋아요",
+            "ㅇㅇ",
+            "넹",
+            "그래요",
+            "해주세요",
+            "ㅇㅋ",
+            "그래",
+            "해줘",
+            "yes",
+            "예"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "no",
+          "synonyms": [
+            "no",
+            "ㄴㄴ",
+            "아니",
+            "놉",
+            "싫어",
+            "괜찮아",
+            "필요없어"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    }
+  ],
+  "metadata": {
+    "api_version": {
+      "major_version": "v2",
+      "minor_version": "2018-11-08"
+    }
+  },
+  "dialog_nodes": [
+    {
+      "type": "standard",
+      "title": "이용권 방법",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "이용권 구매는 대여소 화면에 나와 있는 '이용권 구매' 버튼을 선택하셔서 구매하실 수 있습니다."
+              },
+              {
+                "text": "이용권은 1시간제와 2시간제가 있으므로 필요한 시간에 맞춰 선택하시면 됩니다."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          },
+          {
+            "title": "더 필요하신 게 있나요?",
+            "options": [
+              {
+                "label": "아니오, 괜찮습니다.",
+                "value": {
+                  "input": {
+                    "text": "no"
+                  }
+                }
+              }
+            ],
+            "response_type": "option"
+          }
+        ]
+      },
+      "parent": "node_5_1591098621327",
+      "conditions": "@yes_or_no:yes || #purchase",
+      "dialog_node": "node_7_1591100375483"
+    },
+    {
+      "type": "standard",
+      "title": "회원으로 이용하기",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "회원가입 > 이용권 구매 > 자전거 반납 순으로 이용 가능합니다."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          },
+          {
+            "title": "비회원으로 이용하는 방법도 궁금하세요?",
+            "options": [
+              {
+                "label": "네, 알려주세요.",
+                "value": {
+                  "input": {
+                    "text": "yes"
+                  }
+                }
+              },
+              {
+                "label": "아니오, 괜찮습니다.",
+                "value": {
+                  "input": {
+                    "text": "no"
+                  }
+                }
+              }
+            ],
+            "response_type": "option"
+          }
+        ]
+      },
+      "parent": "node_10_1591098464194",
+      "next_step": {
+        "behavior": "jump_to",
+        "selector": "user_input",
+        "dialog_node": "node_5_1591098621327"
+      },
+      "conditions": "@member:회원",
+      "dialog_node": "node_6_1591098703775",
+      "previous_sibling": "node_5_1591098621327"
+    },
+    {
+      "type": "standard",
+      "title": "비회원으로 이용하기",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "비회원으로 이용하실 때에는 이용권 구매 > 자전거 대여 > 자전거 반납 순으로 이용 가능하십니다."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          },
+          {
+            "title": "이용권을 구매하는 방법이 궁금하세요?",
+            "options": [
+              {
+                "label": "네, 알려주세요.",
+                "value": {
+                  "input": {
+                    "text": "yes"
+                  }
+                }
+              },
+              {
+                "label": "아니오, 괜찮습니다.",
+                "value": {
+                  "input": {
+                    "text": "no"
+                  }
+                }
+              }
+            ],
+            "response_type": "option"
+          }
+        ]
+      },
+      "parent": "node_10_1591098464194",
+      "conditions": "@yes_or_no:yes",
+      "dialog_node": "node_5_1591098621327"
+    },
+    {
+      "type": "standard",
+      "title": "이용 끝",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "이용해주셔서 감사합니다!"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "@yes_or_no:no",
+      "dialog_node": "node_3_1591100313173",
+      "previous_sibling": "Anything else"
+    },
+    {
+      "type": "standard",
+      "title": "자전거 반납",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "자전거를 반납하고 싶으세요?"
+              },
+              {
+                "text": "자전거는 가까운 대여소에서 반납하시면 됩니다. 거치대에 자전거를 거치한 뒤 거치대 연결장치를 당겨서 단말기의 잠금 홈에 삽입하면 반납이 완료됩니다.\n다른 절차는 필요하지 않습니다."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "#return",
+      "dialog_node": "Anything else",
+      "previous_sibling": "node_10_1591098464194",
+      "disambiguation_opt_out": true
+    },
+    {
+      "type": "standard",
+      "title": "이용방법",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "이용 방법이 궁금하시군요! 따릉이의 회원으로 이용하거나 비회원으로 이용하실 수 있습니다."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          },
+          {
+            "title": "회원으로 이용하고 싶으신가요? 아니면 비회원으로 이용하고 싶으신가요?",
+            "options": [
+              {
+                "label": "회원",
+                "value": {
+                  "input": {
+                    "text": "회원"
+                  }
+                }
+              },
+              {
+                "label": "비회원",
+                "value": {
+                  "input": {
+                    "text": "비회원"
+                  }
+                }
+              }
+            ],
+            "response_type": "option"
+          }
+        ]
+      },
+      "conditions": "#use",
+      "dialog_node": "node_10_1591098464194",
+      "previous_sibling": "Welcome"
+    },
+    {
+      "type": "standard",
+      "title": "환영인사",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "안녕하세요. 무엇을 도와드릴까요?"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "welcome",
+      "dialog_node": "Welcome"
+    }
+  ],
+  "counterexamples": [],
+  "system_settings": {
+    "off_topic": {
+      "enabled": true
+    },
+    "disambiguation": {
+      "prompt": "Did you mean:",
+      "enabled": true,
+      "randomize": true,
+      "max_suggestions": 5,
+      "suggestion_text_policy": "title",
+      "none_of_the_above_prompt": "None of the above"
+    },
+    "system_entities": {
+      "enabled": true
+    },
+    "human_agent_assist": {
+      "prompt": "Did you mean:"
+    },
+    "spelling_auto_correct": true
+  },
+  "learning_opt_out": false,
+  "name": "My first skill",
+  "language": "en",
+  "description": ""
+}
